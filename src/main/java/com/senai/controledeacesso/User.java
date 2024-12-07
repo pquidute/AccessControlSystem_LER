@@ -19,11 +19,16 @@ public class User {
             return false;
     }
 
-    public void checkData(){
-        System.out.println(this);
-    }
-
     public String toString() {
-        return ID + "\t\t\t" + name + "\t\t\t" + identifier + "\t\t\t" + password + "\t\t\t";
+        String formattedTable = String.format(
+                "+----------------------+-------------------+------------------------+-------------------+\n" +
+                        "| %-20s | %-17s | %-22s | %-17s |\n" +
+                        "+----------------------+-------------------+------------------------+-------------------+\n" +
+                        "| %-20s | %-17s | %-22s | %-17s |\n" +
+                        "+----------------------+-------------------+------------------------+-------------------+",
+                "ID", "NOME", "NÚMERO DE MATRÍCULA", "SENHA",
+                ID, name, identifier, password
+        );
+        return formattedTable;
     }
 }

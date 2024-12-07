@@ -1,9 +1,13 @@
 package com.senai.controledeacesso;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 public class Student {
     User user;
     String classroom;
     int delays;
+    ArrayList<LocalDateTime> arrayDelays;
 
 
     Student(User user, String classroom) {
@@ -12,10 +16,15 @@ public class Student {
     }
 
     public void showAccessRegisters(){
-
+        if (arrayDelays.isEmpty()){
+            System.out.println("O aluno não tem atrasos registrados");
+        }
+        for (int i = 0; i < arrayDelays.size(); i++) {
+            System.out.println(arrayDelays.get(i));
+        }
     }
 
     public String toString() {
-        return user.toString() + "\nTURMA: " + classroom + "\t\t\tATRASOS: " + delays;
+        return user.toString() + "\nTURMA: " + classroom + "\nATRASOS: " + delays;
     }
 }

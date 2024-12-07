@@ -39,7 +39,11 @@ public class Main {
         carregarDadosDoArquivo();
         conexaoMQTT = new CLienteMQTT(brokerUrl, topico, Main::processarMensagemMQTTRecebida);
         servidorHTTPS = new ServidorHTTPS(); // Inicia o servidor HTTPS
-        arrayStudents.add(new Student(new User("NOME", "MATRÍCULA", "SENHA"), "TURMA"));
+
+        //TEST
+        Student test = new Student(new User("Pedro", "9966", "9966"), "1DEV-A");
+        arrayStudents.add(test);
+
         paginaDeLogin();
 
         // Finaliza o todos os processos abertos ao sair do programa
@@ -285,39 +289,36 @@ public class Main {
         // Função que busca e atualiza a tabela com o ID recebido
         private static void criarNovoRegistroDeAcesso (String idAcessoRecebido){
             boolean usuarioEncontrado = false; // Variável para verificar se o usuário foi encontrado
-            String[][] novaMatrizRegistro = new String[matrizRegistrosDeAcesso.length][matrizRegistrosDeAcesso[0].length];
-            int linhaNovoRegistro = 0;
-
-            if (!matrizRegistrosDeAcesso[0][0].isEmpty()) {//testa se o valor da primeira posição da matriz está diferente de vazia ou "".
-                novaMatrizRegistro = new String[matrizRegistrosDeAcesso.length + 1][matrizRegistrosDeAcesso[0].length];
-                linhaNovoRegistro = matrizRegistrosDeAcesso.length;
-                for (int linhas = 0; linhas < matrizRegistrosDeAcesso.length; linhas++) {
-                    novaMatrizRegistro[linhas] = Arrays.copyOf(matrizRegistrosDeAcesso[linhas], matrizRegistrosDeAcesso[linhas].length);
+            // Convert idAcessoRecebido to an integer
+            int idAcessoInt;
+            try {
+                idAcessoInt = Integer.parseInt(idAcessoRecebido);
+            } catch (NumberFormatException e) {
+                System.out.println("O ID fornecido não é um número válido.");
+                return; // Exit the method if conversion fails
+            }
+            int currentStudentIndex = 0;
+            for (int i = 0; i < arrayStudents.size(); i++) {
+                Student currentStudent = arrayStudents.get(i); // Get the current student
+                if (currentStudent.user.ID == idAcessoInt) { // Match by ID
+                    // Increment the integer attribute in the Student class
+                    currentStudent.delays += 1;
+                    currentStudentIndex = arrayAQV.indexOf(currentStudent);
                 }
             }
-            // Loop para percorrer a matriz e buscar o idAcesso
-            for (int linhas = 1; linhas < matrizCadastro.length; linhas++) { // Começa de 1 para ignorar o cabeçalho
-                String idAcessoNaMatriz = matrizCadastro[linhas][1]; // A coluna do idAcesso é a segunda coluna (índice 1)
-
-                // Verifica se o idAcesso da matriz corresponde ao idAcesso recebido
-                if (idAcessoNaMatriz.equals(idAcessoRecebido)) {
-                    novaMatrizRegistro[linhaNovoRegistro][0] = matrizCadastro[linhas][2]; // Assume que o nome do usuário está na coluna 3
-                    novaMatrizRegistro[linhaNovoRegistro][1] = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-                    novaMatrizRegistro[linhaNovoRegistro][2] = matrizCadastro[linhas][5];
-                    System.out.println("Usuário encontrado: " +
-                            novaMatrizRegistro[linhaNovoRegistro][0] + " - " +
-                            novaMatrizRegistro[linhaNovoRegistro][1]);
+                if (arrayStudents.get(currentStudentIndex).user.ID == idAcessoInt) {
+                    Student currentStudent = arrayStudents.get(currentStudentIndex);
+                    currentStudent.arrayDelays.add(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                     usuarioEncontrado = true; // Marca que o usuário foi encontrado
-                    matrizRegistrosDeAcesso = novaMatrizRegistro;
-                    break; // Sai do loop, pois já encontrou o usuário
+                    return;
                 }
-            }
             // Se não encontrou o usuário, imprime uma mensagem
             if (!usuarioEncontrado) {
                 System.out.println("Id de Acesso " + idAcessoRecebido + " não cadastrado.");
             }
         }
-        private static void cadastrarNovoIdAcesso (String novoIdAcesso){
+
+        private static void cadastrarNovoIdAcesso (String novoIdAcesso) {
             boolean encontrado = false; // Variável para verificar se o usuário foi encontrado
             String idUsuarioEscolhido = String.valueOf(idUsuarioRecebidoPorHTTP);
             String dispositivoEscolhido = dispositivoRecebidoPorHTTP;
@@ -332,6 +333,8 @@ public class Main {
                 idUsuarioEscolhido = scanner.nextLine();
                 conexaoMQTT.publicarMensagem(topico, dispositivoEscolhido);
             }
+        }
+
 
             modoCadastrarIdAcesso = true;
             // Verifica se o ID do usuário existe na matriz
