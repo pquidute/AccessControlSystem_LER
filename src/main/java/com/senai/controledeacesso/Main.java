@@ -4,7 +4,6 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,7 +11,6 @@ import java.util.concurrent.Future;
 
 public class Main {
     private static final File pastaControleDeAcesso = new File(System.getProperty("user.home"), "ControleDeAcesso");
-    private static final File arquivoBancoDeDados = new File(pastaControleDeAcesso, "bancoDeDados.txt");
     private static final File databaseStudent = new File(pastaControleDeAcesso, "databaseStudent.txt");
     private static final File databaseADM = new File(pastaControleDeAcesso, "databaseADM.txt");
     private static final File databaseAQV = new File(pastaControleDeAcesso, "databaseAQV.txt");
@@ -344,7 +342,7 @@ public class Main {
                     System.out.println("ID de acesso " + novoIdAcesso + " associado ao usuário " + arrayStudents.get(i).user.name);
                     conexaoMQTT.publicarMensagem("cadastro/disp", "CadastroConcluido");
                     encontrado = true;
-                    salvarDadosNoArquivo();
+                    salvarDados();
                     break;
                 }
             }
@@ -413,11 +411,10 @@ public class Main {
                     }
                     break;
             }
-            salvarDadosNoArquivo();
+            salvarDados();
         }
 
         private static void atualizarUsuario () {
-
             exibirCadastro();
             System.out.println("Escolha um id para atualizar o cadastro:");
             int idUsuario = scanner.nextInt();
@@ -433,100 +430,165 @@ public class Main {
                             System.out.print("\n--------------------ATUALIZAÇÃO DE DADOS--------------------\nNome: ");
                             String newName = scanner.nextLine();
                             System.out.print("Número de Matrícula: ");
-                            String newEnrollNumber  = scanner.nextLine();
+                            String newIdentifier  = scanner.nextLine();
                             System.out.print("Senha: ");
                             String newPassword = scanner.nextLine();
                             System.out.print("ID: ");
-                            int ID = scanner.nextInt();
+                            int newID = scanner.nextInt();
                             scanner.nextLine();
                             System.out.print("Turma: ");
                             String newClassroom = scanner.nextLine();
                             System.out.print("Quantidade de atrasos: ");
                             int delays = scanner.nextInt();
                             scanner.nextLine();
-                            arrayStudents.get(i).user.name.equals(newName);
-                            //finish updating
+                            arrayStudents.get(i).user.name = (newName);
+                            arrayStudents.get(i).user.identifier = (newIdentifier);
+                            arrayStudents.get(i).user.password = (newPassword);
+                            arrayStudents.get(i).user.ID = (newID);
+                            arrayStudents.get(i).classroom = newClassroom;
+                            arrayStudents.get(i).delays = delays;
+                            System.out.println("Dados atualizados com sucesso!");
+                            System.out.println(arrayStudents.get(i).toString());
                             break;
                         case 2:
+                            System.out.print("\n--------------------ATUALIZAÇÃO DE NOME--------------------\nNovo nome: ");
+                            newName = scanner.nextLine();
+                            arrayStudents.get(i).user.name = (newName);
+                            System.out.println("Nome atualizado com sucesso!");
+                            System.out.println(arrayStudents.get(i).toString());
                             break;
                         case 3:
+                            System.out.print("\n--------------------ATUALIZAÇÃO DE IDENTIFICADOR--------------------\nNovo número de matrícula: ");
+                            newIdentifier = scanner.nextLine();
+                            arrayStudents.get(i).user.identifier = (newIdentifier);
+                            System.out.println("Número de matrícula atualizado com sucesso!");
+                            System.out.println(arrayStudents.get(i).toString());
                             break;
                         case 4:
+                            System.out.print("\n--------------------ATUALIZAÇÃO DE SENHA--------------------\nNova senha: ");
+                            newPassword = scanner.nextLine();
+                            arrayStudents.get(i).user.password = (newPassword);
+                            System.out.println("Senha atualizada com sucesso!");
+                            System.out.println(arrayStudents.get(i).toString());
                             break;
                         case 5:
+                            System.out.print("\n--------------------ATUALIZAÇÃO DE ID--------------------\nNovo ID: ");
+                            newID = scanner.nextInt();
+                            arrayStudents.get(i).user.ID = (newID);
+                            System.out.println("ID atualizado com sucesso!");
+                            System.out.println(arrayStudents.get(i).toString());
                             break;
                         case 6:
+                            System.out.print("\n--------------------ATUALIZAÇÃO DE TURMA--------------------\nNova Turma: ");
+                            newClassroom = scanner.nextLine();
+                            arrayStudents.get(i).classroom = (newClassroom);
+                            System.out.println("Turma atualizada com sucesso!");
+                            System.out.println(arrayStudents.get(i).toString());
                             break;
                         case 7:
+                            System.out.print("\n--------------------ATUALIZAÇÃO DE ATRASOS--------------------\nQuantidade de atrasos: ");
+                            delays = scanner.nextInt();
+                            arrayStudents.get(i).delays = delays;
+                            System.out.println("Atrasos atualizados com sucesso!");
+                            System.out.println(arrayStudents.get(i).toString());
                             break;
                         default:
                             System.out.println("Opção inválida");
                     }
                 }
             }
-
-            System.out.println("---------Atualizado com sucesso-----------");
-            exibirCadastro();
-            salvarDadosNoArquivo();
+            salvarDados();
         }
 
         public static void deletarUsuario () {
-            String[][] novaMatriz = new String[matrizCadastro.length - 1][matrizCadastro[0].length];
-            int idUsuario = idUsuarioRecebidoPorHTTP;
-            if (idUsuarioRecebidoPorHTTP == 0) {
-                exibirCadastro();
-                System.out.println("Escolha um id para deletar o cadastro:");
-                idUsuario = scanner.nextInt();
-                scanner.nextLine();
+            exibirCadastro();
+            System.out.println("Escolha um id para deletar o cadastro:");
+            int idUsuario = scanner.nextInt();
+            scanner.nextLine();
+            for (int i = 0; i < arrayStudents.size(); i++) {
+                if(arrayStudents.get(i).user.ID == idUsuario){
+                    arrayStudents.remove(i);
+                    break;
+                }
+                else System.out.println("ID não encontrado!");
             }
-
-            for (int i = 1, j = 1; i < matrizCadastro.length; i++) {
-                if (i == idUsuario)
-                    continue;
-                novaMatriz[j] = matrizCadastro[i];
-                novaMatriz[j][0] = String.valueOf(j);
-                j++;
-            }
-
-            matrizCadastro = novaMatriz;
-            matrizCadastro[0] = cabecalho;
-            salvarDadosNoArquivo();
-            System.out.println("-----------------------Deletado com sucesso------------------------\n");
+            salvarDados();
+            System.out.println("-----------------------Usuário deletado com sucesso------------------------\n");
             idUsuarioRecebidoPorHTTP = 0;
         }
 
         // Funções para persistência de dados
         private static void carregarDadosDoArquivo () {
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(arquivoBancoDeDados))) {
-                String linha;
-                StringBuilder conteudo = new StringBuilder();
 
-                while ((linha = reader.readLine()) != null) {
-                    if (!linha.trim().isEmpty()) {
-                        conteudo.append(linha).append("\n");
-                    }
-                }
+        }
 
-                if (!conteudo.toString().trim().isEmpty()) {
-                    String[] linhasDaTabela = conteudo.toString().split("\n");
-                    matrizCadastro = new String[linhasDaTabela.length][cabecalho.length];
-                    for (int i = 0; i < linhasDaTabela.length; i++) {
-                        matrizCadastro[i] = linhasDaTabela[i].split(",");
-                    }
+        public static void salvarDados() {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(databaseStudent))) {
+                // Write the header row
+                writer.write("ID,Name,Identifier,Password,Classroom,Delays,AccessId,ArrayDelays");
+                writer.newLine();
+                // Write data for each student in the list
+                for (Student student : arrayStudents) {
+                    StringBuilder linha = new StringBuilder();
+                    // Add User data
+                    linha.append(student.user.ID).append(",");
+                    linha.append(student.user.name).append(",");
+                    linha.append(student.user.identifier).append(",");
+                    linha.append(student.user.password).append(",");
+                    // Add Student-specific data
+                    linha.append(student.classroom).append(",");
+                    linha.append(student.delays).append(",");
+                    linha.append(student.accessId).append(",");
+                    // Add arrayDelays as a single concatenated string
+                    linha.append(String.join(";", student.arrayDelays));
+                    // Write the line
+                    writer.write(linha.toString());
+                    writer.newLine();
                 }
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            matrizCadastro[0] = cabecalho;
-        }
 
-        public static void salvarDadosNoArquivo () {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoBancoDeDados))) {
-                for (String[] linha : matrizCadastro) {
-                    writer.write(String.join(",", linha) + "\n");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(databaseADM))) {
+                // Write the header row
+                writer.write("ID,Name,Identifier,Password");
+                writer.newLine();
+                // Write data for each ADM in the list
+                for (ADM adm : arrayADM) {
+                    StringBuilder linha = new StringBuilder();
+                    // Add User data from the ADM object
+                    linha.append(adm.user.ID).append(",");
+                    linha.append(adm.user.name).append(",");
+                    linha.append(adm.user.identifier).append(",");
+                    linha.append(adm.user.password);
+                    // Write the line
+                    writer.write(linha.toString());
+                    writer.newLine();
                 }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(databaseAQV))) {
+                // Write the header row
+                writer.write("ID,Name,Identifier,Password");
+                writer.newLine();
+                // Write data for each ADM in the list
+                for (AQV aqv : arrayAQV) {
+                    StringBuilder linha = new StringBuilder();
+                    // Add User data from the ADM object
+                    linha.append(aqv.user.ID).append(",");
+                    linha.append(aqv.user.name).append(",");
+                    linha.append(aqv.user.identifier).append(",");
+                    linha.append(aqv.user.password);
+                    // Write the line
+                    writer.write(linha.toString());
+                    writer.newLine();
+                }
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -542,16 +604,42 @@ public class Main {
                 }
             }
 
-            // Verifica se o arquivo bancoDeDados.txt existe, caso contrário, cria
-            if (!arquivoBancoDeDados.exists()) {
+            // Verifica se o arquivo databaseAQV.txt existe, caso contrário, cria
+            if (!databaseAQV.exists()) {
                 try {
-                    if (arquivoBancoDeDados.createNewFile()) {
-                        System.out.println("Arquivo bancoDeDados.txt criado com sucesso.");
+                    if (databaseAQV.createNewFile()) {
+                        System.out.println("Arquivo databaseAQV.txt criado com sucesso.");
                     } else {
-                        System.out.println("Falha ao criar o arquivo bancoDeDados.txt.");
+                        System.out.println("Falha ao criar o arquivo databaseAQV.txt.");
                     }
                 } catch (IOException e) {
-                    System.out.println("Erro ao criar arquivo bancoDeDados.txt: " + e.getMessage());
+                    System.out.println("Erro ao criar arquivo databaseAQV.txt: " + e.getMessage());
+                }
+            }
+
+            // Verifica se o arquivo databaseADM.txt existe, caso contrário, cria
+            if (!databaseADM.exists()) {
+                try {
+                    if (databaseADM.createNewFile()) {
+                        System.out.println("Arquivo databaseADM.txt criado com sucesso.");
+                    } else {
+                        System.out.println("Falha ao criar o arquivo databaseADM.txt.");
+                    }
+                } catch (IOException e) {
+                    System.out.println("Erro ao criar arquivo databaseADM.txt: " + e.getMessage());
+                }
+            }
+
+            // Verifica se o arquivo databaseStudent.txt existe, caso contrário, cria
+            if (!databaseStudent.exists()) {
+                try {
+                    if (databaseStudent.createNewFile()) {
+                        System.out.println("Arquivo databaseStudent.txt criado com sucesso.");
+                    } else {
+                        System.out.println("Falha ao criar o arquivo databaseStudent.txt.");
+                    }
+                } catch (IOException e) {
+                    System.out.println("Erro ao criar arquivo databaseStudent.txt: " + e.getMessage());
                 }
             }
 
