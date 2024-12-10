@@ -13,6 +13,10 @@ import java.util.concurrent.Future;
 public class Main {
     private static final File pastaControleDeAcesso = new File(System.getProperty("user.home"), "ControleDeAcesso");
     private static final File arquivoBancoDeDados = new File(pastaControleDeAcesso, "bancoDeDados.txt");
+    private static final File databaseStudent = new File(pastaControleDeAcesso, "databaseStudent.txt");
+    private static final File databaseADM = new File(pastaControleDeAcesso, "databaseADM.txt");
+    private static final File databaseAQV = new File(pastaControleDeAcesso, "databaseAQV.txt");
+    private static final File arquivoRegistrosDeAcesso = new File(pastaControleDeAcesso, "registrosDeAcesso.txt");
     public static final File pastaImagens = new File(pastaControleDeAcesso, "imagens");
 
     //Arrays
@@ -41,8 +45,7 @@ public class Main {
         servidorHTTPS = new ServidorHTTPS(); // Inicia o servidor HTTPS
 
         //TEST
-        Student test = new Student(new User("Pedro", "9966", "9966"), "1DEV-A");
-        arrayStudents.add(test);
+        arrayADM.add(new ADM(new User("Pedro", "pedro@icloud.com", "123456")));
 
         paginaDeLogin();
 
@@ -176,7 +179,7 @@ public class Main {
                     exibirCadastro();
                     break;
                 case 2:
-                    cadastrarUsuario();
+                    cadastrarUsuario(1);
                     break;
                 case 3:
                     atualizarUsuario();
@@ -219,7 +222,7 @@ public class Main {
                     exibirCadastro();
                     break;
                 case 2:
-                    cadastrarUsuario();
+                    cadastrarUsuario(2);
                     break;
                 case 3:
                     atualizarUsuario();
@@ -240,7 +243,7 @@ public class Main {
         } while (opcao != 6);
     }
         private static void menuStudent(Student student) {
-        System.out.println("\nBem vindo " + student.user.name + "!\n1. Consultar meus dados\n2. Consultar meus atrasos");
+        System.out.println("\nBem vindo " + student.user.name + "!\n1. Consultar meus dados\n2. Consultar meus atrasos\n3. Atualizar meus dados");
         int menu3 = scanner.nextInt();
         switch (menu3) {
             case 1:
@@ -248,6 +251,9 @@ public class Main {
                 break;
             case 2:
                 student.showAccessRegisters();
+                break;
+            case 3:
+                //data update function
                 break;
             default:
                 System.out.println("Opção inválida!");
@@ -308,7 +314,7 @@ public class Main {
             }
                 if (arrayStudents.get(currentStudentIndex).user.ID == idAcessoInt) {
                     Student currentStudent = arrayStudents.get(currentStudentIndex);
-                    currentStudent.arrayDelays.add(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                    currentStudent.arrayDelays.add(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                     usuarioEncontrado = true; // Marca que o usuário foi encontrado
                     return;
                 }
@@ -333,9 +339,6 @@ public class Main {
                 idUsuarioEscolhido = scanner.nextLine();
                 conexaoMQTT.publicarMensagem(topico, dispositivoEscolhido);
             }
-        }
-
-
             modoCadastrarIdAcesso = true;
             // Verifica se o ID do usuário existe na matriz
             for (int linhas = 1; linhas < matrizCadastro.length; linhas++) {
@@ -369,32 +372,58 @@ public class Main {
             System.out.println(tabelaCadastro);
         }
 
-        private static void cadastrarUsuario () {
-            System.out.print("Digite a quantidade de usuarios que deseja cadastrar:");
-            int qtdUsuarios = scanner.nextInt();
-            scanner.nextLine();
+        private static void cadastrarUsuario (int tipoDeUsuario) {
 
-            String[][] novaMatriz = new String[matrizCadastro.length + qtdUsuarios][matrizCadastro[0].length];
-
-            for (int linhas = 0; linhas < matrizCadastro.length; linhas++) {
-                novaMatriz[linhas] = Arrays.copyOf(matrizCadastro[linhas], matrizCadastro[linhas].length);
+            switch (tipoDeUsuario){
+                case 1:
+                    System.out.println("Qual será o tipo de usuário?\n1. ADM(coordenador)\n2. AQV\n3. Aluno");
+                    int menu = scanner.nextInt();
+                    switch (menu){
+                        case 1:
+                            //create ADM
+                            break;
+                        case 2:
+                            //create AQV
+                            break;
+                        case 3:
+                            System.out.println("Quantos alunos serão cadastrados?");
+                            int qtdUsuarios = scanner.nextInt();
+                            scanner.nextLine();
+                            for (int i = 0; i < qtdUsuarios; i++) {
+                                System.out.print("ID: ");
+                                String ID = scanner.nextLine();
+                                System.out.print("NOME: ");
+                                String name = scanner.nextLine();
+                                System.out.print("Número de Matrícula: ");
+                                String identifier = scanner.nextLine();
+                                System.out.print("Senha: ");
+                                String password = scanner.nextLine();
+                                System.out.print("TURMA: ");
+                                String classroom = scanner.nextLine();
+                                arrayStudents.add(new Student(new User(name, identifier, password), classroom));
+                            }
+                            break;
+                    }
+                    break;
+                case 2:
+                    System.out.println("Quantos alunos serão cadastrados?");
+                    int qtdUsuarios = scanner.nextInt();
+                    scanner.nextLine();
+                    for (int i = 0; i < qtdUsuarios; i++) {
+                        System.out.print("ID: ");
+                        String ID = scanner.nextLine();
+                        System.out.print("NOME: ");
+                        String name = scanner.nextLine();
+                        System.out.print("Número de Matrícula: ");
+                        String identifier = scanner.nextLine();
+                        System.out.print("Senha: ");
+                        String password = scanner.nextLine();
+                        System.out.print("TURMA: ");
+                        String classroom = scanner.nextLine();
+                        arrayStudents.add(new Student(new User(name, identifier, password), classroom));
+                    }
+                    break;
             }
-
-            System.out.println("\nPreencha os dados a seguir:");
-            for (int linhas = matrizCadastro.length; linhas < novaMatriz.length; linhas++) {
-                System.out.println(matrizCadastro[0][0] + "- " + linhas);
-                novaMatriz[linhas][0] = String.valueOf(linhas);// preenche o campo id com o numero gerado pelo for
-                novaMatriz[linhas][1] = "-"; //preenche o campo idCadastro com "-"
-
-                for (int colunas = 2; colunas < matrizCadastro[0].length - 1; colunas++) {
-                    System.out.print(matrizCadastro[0][colunas] + ": ");
-                    novaMatriz[linhas][colunas] = scanner.nextLine();
-                }
-                novaMatriz[linhas][matrizCadastro[0].length - 1] = "-";//preenche o campo imagem com "-"
-
-                System.out.println("-----------------------Inserido com sucesso------------------------\n");
-            }
-            matrizCadastro = novaMatriz;
             salvarDadosNoArquivo();
         }
 

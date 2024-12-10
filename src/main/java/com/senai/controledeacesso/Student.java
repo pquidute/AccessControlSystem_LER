@@ -1,13 +1,13 @@
 package com.senai.controledeacesso;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Student {
     User user;
     String classroom;
     int delays;
-    ArrayList<LocalDateTime> arrayDelays;
+    int accessId;
+    ArrayList<String> arrayDelays;
 
 
     Student(User user, String classroom) {
