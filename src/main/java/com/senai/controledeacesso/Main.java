@@ -23,9 +23,7 @@ public class Main {
     static ArrayList<Student> arrayStudents = new ArrayList<>();
     static ArrayList<AQV> arrayAQV = new ArrayList<>();
     static ArrayList<ADM> arrayADM = new ArrayList<>();
-    static String[] cabecalho = {"ID", "IdAcesso", "Nome", "Telefone", "Email", "Imagem"};
-    static String[][] matrizCadastro = {{"", ""}};
-    public static String[][] matrizRegistrosDeAcesso = {{"", "", ""}};// inicia a matriz com uma linha e duas colunas com "" para que na primeira vez não apareça null na tabela de registros
+
     //MQTT server properties
     static volatile boolean modoCadastrarIdAcesso = false;
     static int idUsuarioRecebidoPorHTTP = 0;
@@ -295,10 +293,9 @@ public class Main {
         // Função que busca e atualiza a tabela com o ID recebido
         private static void criarNovoRegistroDeAcesso (String idAcessoRecebido){
             boolean usuarioEncontrado = false; // Variável para verificar se o usuário foi encontrado
-            // Convert idAcessoRecebido to an integer
             int idAcessoInt;
             try {
-                idAcessoInt = Integer.parseInt(idAcessoRecebido);
+                idAcessoInt = Integer.parseInt(idAcessoRecebido);  // Convert String 'idAcessoRecebido' to int
             } catch (NumberFormatException e) {
                 System.out.println("O ID fornecido não é um número válido.");
                 return; // Exit the method if conversion fails
@@ -326,7 +323,7 @@ public class Main {
 
         private static void cadastrarNovoIdAcesso (String novoIdAcesso) {
             boolean encontrado = false; // Variável para verificar se o usuário foi encontrado
-            String idUsuarioEscolhido = String.valueOf(idUsuarioRecebidoPorHTTP);
+            int idUsuarioEscolhido = idUsuarioRecebidoPorHTTP;
             String dispositivoEscolhido = dispositivoRecebidoPorHTTP;
 
             if (idUsuarioRecebidoPorHTTP == 0) {
@@ -336,40 +333,32 @@ public class Main {
                 }
                 // Pede ao administrador que escolha o ID do usuário
                 System.out.print("Digite o ID do usuário para associar ao novo idAcesso: ");
-                idUsuarioEscolhido = scanner.nextLine();
+                idUsuarioEscolhido = scanner.nextInt();
                 conexaoMQTT.publicarMensagem(topico, dispositivoEscolhido);
             }
             modoCadastrarIdAcesso = true;
             // Verifica se o ID do usuário existe na matriz
-            for (int linhas = 1; linhas < matrizCadastro.length; linhas++) {
-                if (matrizCadastro[linhas][0].equals(idUsuarioEscolhido)) { // Coluna 0 é o idUsuario
-                    matrizCadastro[linhas][1] = novoIdAcesso; // Atualiza a coluna 1 com o novo idAcesso
-                    System.out.println("id de acesso " + novoIdAcesso + " associado ao usuário " + matrizCadastro[linhas][2]);
+            for (int i = 0; i < arrayStudents.size(); i++) {
+                if (arrayStudents.get(i).user.ID == idUsuarioEscolhido){
+                    arrayStudents.get(i).accessId = Integer.parseInt(novoIdAcesso);
+                    System.out.println("ID de acesso " + novoIdAcesso + " associado ao usuário " + arrayStudents.get(i).user.name);
                     conexaoMQTT.publicarMensagem("cadastro/disp", "CadastroConcluido");
                     encontrado = true;
                     salvarDadosNoArquivo();
                     break;
                 }
             }
-
             // Se não encontrou o usuário, imprime uma mensagem
             if (!encontrado) {
-                System.out.println("Usuário com id" + idUsuarioEscolhido + " não encontrado.");
+                System.out.println("Usuário não encontrado!");
             }
         }
 
         // Funções de CRUD
         private static void exibirCadastro () {
-            StringBuilder tabelaCadastro = new StringBuilder();
-
-            for (String[] usuarioLinha : matrizCadastro) {
-                for (int colunas = 0; colunas < matrizCadastro[0].length; colunas++) {
-                    int largura = colunas < 2 ? (colunas == 0 ? 4 : 8) : 25;
-                    tabelaCadastro.append(String.format("%-" + largura + "s | ", usuarioLinha[colunas]));
-                }
-                tabelaCadastro.append("\n");
+            for (int i = 0; i < arrayStudents.size(); i++) {
+                System.out.println(arrayStudents.get(i).toString());
             }
-            System.out.println(tabelaCadastro);
         }
 
         private static void cadastrarUsuario (int tipoDeUsuario) {
@@ -433,12 +422,47 @@ public class Main {
             System.out.println("Escolha um id para atualizar o cadastro:");
             int idUsuario = scanner.nextInt();
             scanner.nextLine();
+            scanner.nextLine();
             System.out.println("\nAtualize os dados a seguir:");
-
-            System.out.println(matrizCadastro[0][0] + "- " + idUsuario);
-            for (int dados = 2; dados < matrizCadastro[0].length; dados++) {
-                System.out.print(matrizCadastro[0][dados] + ": ");
-                matrizCadastro[idUsuario][dados] = scanner.nextLine();
+            for (int i = 0; i < arrayStudents.size(); i++) {
+                if (arrayStudents.get(i).user.ID == idUsuario){
+                    System.out.println("Qual dado será atualizado?\n1. Todos\n2. Nome\n3. Número de Matrícula\n4. Senha\n5. ID\n6; Turma\n7. Quantidade de atrasos");
+                    int menu = scanner.nextInt();
+                    switch (menu){
+                        case 1:
+                            System.out.print("\n--------------------ATUALIZAÇÃO DE DADOS--------------------\nNome: ");
+                            String newName = scanner.nextLine();
+                            System.out.print("Número de Matrícula: ");
+                            String newEnrollNumber  = scanner.nextLine();
+                            System.out.print("Senha: ");
+                            String newPassword = scanner.nextLine();
+                            System.out.print("ID: ");
+                            int ID = scanner.nextInt();
+                            scanner.nextLine();
+                            System.out.print("Turma: ");
+                            String newClassroom = scanner.nextLine();
+                            System.out.print("Quantidade de atrasos: ");
+                            int delays = scanner.nextInt();
+                            scanner.nextLine();
+                            arrayStudents.get(i).user.name.equals(newName);
+                            //finish updating
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            break;
+                        case 7:
+                            break;
+                        default:
+                            System.out.println("Opção inválida");
+                    }
+                }
             }
 
             System.out.println("---------Atualizado com sucesso-----------");
