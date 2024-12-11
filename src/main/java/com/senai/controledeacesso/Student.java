@@ -18,18 +18,16 @@ public class Student {
     }
 
     public void showAccessRegisters(){
-        if (arrayDelays.isEmpty()){
-            System.out.println("O aluno não tem atrasos registrados");
-        }
-        for (int i = 0; i < arrayDelays.size(); i++) {
-            System.out.println(arrayDelays.get(i));
-        }
+        if (this.delays == 0){
+            System.out.println("Você não tem atrasos!");
+        }else
+            System.out.println("Você tem " + this.delays +  " atrasos");
     }
 
     public String toString() {
         return String.format(
-                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6d | %-9d |",
-                user.ID, user.name, user.identifier, user.password, classroom, delays, accessId
+                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6d |",
+                user.ID, user.name, user.identifier, user.password, classroom, delays
         );
     }
 

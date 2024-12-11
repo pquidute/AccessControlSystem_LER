@@ -22,8 +22,8 @@ public class User {
 
     public String toString() {
         return String.format(
-                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6s | %-9s |",
-                ID, name, identifier, password, "N/A", 0, "N/A"
+                "| %-5d | %-15s | %-15s | %-10s |",
+                ID, name, identifier, password
         );
     }
 }
