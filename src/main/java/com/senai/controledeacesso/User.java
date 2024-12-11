@@ -21,15 +21,9 @@ public class User {
     }
 
     public String toString() {
-        String formattedTable = String.format(
-                "+----------------------+-------------------+------------------------+-------------------+\n" +
-                        "| %-20s | %-17s | %-22s | %-17s |\n" +
-                        "+----------------------+-------------------+------------------------+-------------------+\n" +
-                        "| %-20s | %-17s | %-22s | %-17s |\n" +
-                        "+----------------------+-------------------+------------------------+-------------------+",
-                "ID", "NOME", "NÚMERO DE MATRÍCULA", "SENHA",
-                ID, name, identifier, password
+        return String.format(
+                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6s | %-9s |",
+                ID, name, identifier, password, "N/A", 0, "N/A"
         );
-        return formattedTable;
     }
 }

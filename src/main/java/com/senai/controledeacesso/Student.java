@@ -27,7 +27,10 @@ public class Student {
     }
 
     public String toString() {
-        return user.toString() + "\nTURMA: " + classroom + "\nATRASOS: " + delays;
+        return String.format(
+                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6d | %-9d |",
+                user.ID, user.name, user.identifier, user.password, classroom, delays, accessId
+        );
     }
 
     public void addDelay(String delayDetails) {

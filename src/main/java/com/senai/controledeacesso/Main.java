@@ -43,7 +43,7 @@ public class Main {
         servidorHTTPS = new ServidorHTTPS(); // Inicia o servidor HTTPS
 
         //TEST
-        arrayADM.add(new ADM(new User("Pedro", "pedro@icloud.com", "123456")));
+        arrayADM.add(new ADM(new User("Pedro", "pedro@icloud.com", "acesso123")));
 
         paginaDeLogin();
 
@@ -56,7 +56,7 @@ public class Main {
     }
 
     //Login
-        private static void paginaDeLogin() {
+    private static void paginaDeLogin() {
         System.out.println("BEM VINDO!\nFaça seu login para continuar:\n1 - Login para Coordenador\n2 - Login para AQV\n3 - Login para Aluno");
         int menu = scanner.nextInt();
         scanner.nextLine();
@@ -65,7 +65,8 @@ public class Main {
                 ADM adm = loginADM();
                 if (adm != null) {
                     menuADM(adm);
-                } else break;
+                }
+                break;
             case 2:
                 AQV aqv = loginAQV();
                 if (aqv != null) {
@@ -80,76 +81,87 @@ public class Main {
                 break;
         }
     }
-        private static ADM loginADM() {
-            System.out.print("Email: ");
-            String identifier = scanner.nextLine();
-            System.out.print("Senha: ");
-            String password = scanner.nextLine();
-            boolean userFound = false; // Track if user is found
-            for (int i = 0; i < arrayADM.size(); i++) {
-                ADM adm = arrayADM.get(i); // Get the object at index i
-                if (adm.user != null && adm.user.identifier.equals(identifier)) { // Compare email
-                    userFound = true; // Mark user as found
-                    boolean login = adm.user.Login(identifier, password); // Call the login method
-                    if (login) {
-                        System.out.println("Login bem sucedido!");
-                        return adm;
-                    } else {
-                        System.out.println("Senha incorreta, tente novamente!");
-                    }
+    private static ADM loginADM() {
+        System.out.print("Email: ");
+        String identifierReceived = scanner.nextLine();
+        System.out.print("Senha: ");
+        String passwordReceived = scanner.nextLine();
+        boolean incorrectPassword = false; // Track if an incorrect password was entered
+
+        for (int i = 0; i < arrayADM.size(); i++) {
+            ADM adm = arrayADM.get(i); // Get the object at index i
+            if (adm.user != null && adm.user.identifier.equals(identifierReceived)) { // Compare email
+                if (adm.user.Login(identifierReceived, passwordReceived)) { // Call the login method
+                    System.out.println("Login bem sucedido!");
+                    return adm;
+                } else {
+                    incorrectPassword = true; // Mark the password as incorrect
                 }
             }
-            if (!userFound) {
-                System.out.println("Usuário não encontrado, tente novamente");
-            }
-            return null;
         }
-        private static Student loginStudent() {
-            System.out.print("Número de Matricula: ");
-            String identifier = scanner.nextLine();
-            System.out.print("Senha: ");
-            String password = scanner.nextLine();
-            boolean userFound = false; // Track if user is found
-            for (int i = 0; i < arrayStudents.size(); i++) {
-                Student student = arrayStudents.get(i); // Get the object at index i
-                if (student.user != null && student.user.identifier.equals(identifier)) { // Compare email
-                    userFound = true; // Mark user as found
-                    boolean login = student.user.Login(identifier, password); // Call the login method
-                    if (login) {
-                        System.out.println("Login bem sucedido!");
-                        return student;
-                    } else {
-                        System.out.println("Senha incorreta, tente novamente!");
-                    }
+
+        if (incorrectPassword) {
+            System.out.println("Senha incorreta, tente novamente!");
+        } else {
+            System.out.println("Usuário não encontrado, tente novamente");
+        }
+
+        return null;
+    }
+
+
+    private static Student loginStudent() {
+        System.out.print("Número de Matrícula: ");
+        String identifierReceived = scanner.nextLine();
+        System.out.print("Senha: ");
+        String passwordReceived = scanner.nextLine();
+        boolean incorrectPassword = false; // Track if an incorrect password was entered
+
+        for (int i = 0; i < arrayStudents.size(); i++) {
+            Student std = arrayStudents.get(i); // Get the object at index i
+            if (std.user != null && std.user.identifier.equals(identifierReceived)) { // Compare email
+                if (std.user.Login(identifierReceived, passwordReceived)) { // Call the login method
+                    System.out.println("Login bem sucedido!");
+                    return std;
+                } else {
+                    incorrectPassword = true; // Mark the password as incorrect
                 }
             }
-            if (!userFound) {
-                System.out.println("Usuário não encontrado, tente novamente");
-            }
-            return null;
+        }
+
+        if (incorrectPassword) {
+            System.out.println("Senha incorreta, tente novamente!");
+        } else {
+            System.out.println("Usuário não encontrado, tente novamente");
+        }
+
+        return null;
         }
         private static AQV loginAQV() {
             System.out.print("Email: ");
-            String identifier = scanner.nextLine();
+            String identifierReceived = scanner.nextLine();
             System.out.print("Senha: ");
-            String password = scanner.nextLine();
-            boolean userFound = false; // Track if user is found
-            for (int i = 0; i < arrayADM.size(); i++) {
+            String passwordReceived = scanner.nextLine();
+            boolean incorrectPassword = false; // Track if an incorrect password was entered
+
+            for (int i = 0; i < arrayAQV.size(); i++) {
                 AQV aqv = arrayAQV.get(i); // Get the object at index i
-                if (aqv.user != null && aqv.user.identifier.equals(identifier)) { // Compare email
-                    userFound = true; // Mark user as found
-                    boolean login = aqv.user.Login(identifier, password); // Call the login method
-                    if (login) {
+                if (aqv.user != null && aqv.user.identifier.equals(identifierReceived)) { // Compare email
+                    if (aqv.user.Login(identifierReceived, passwordReceived)) { // Call the login method
                         System.out.println("Login bem sucedido!");
                         return aqv;
                     } else {
-                        System.out.println("Senha incorreta, tente novamente!");
+                        incorrectPassword = true; // Mark the password as incorrect
                     }
                 }
             }
-            if (!userFound) {
+
+            if (incorrectPassword) {
+                System.out.println("Senha incorreta, tente novamente!");
+            } else {
                 System.out.println("Usuário não encontrado, tente novamente");
             }
+
             return null;
         }
 
@@ -160,11 +172,11 @@ public class Main {
             String menu = """
                     _________________________________________________________
                     |   Escolha uma opção:                                  |
-                    |       1- Exibir cadastro completo                     |
-                    |       2- Inserir novo cadastro                        |
-                    |       3- Atualizar cadastro por id                    |
-                    |       4- Deletar um cadastro por id                   |
-                    |       5- Associar TAG ou cartão de acesso ao usuário  |
+                    |       1- Exibir cadastros                             |
+                    |       2- Registrar novo usuário                       |
+                    |       3- Atualizar usuário                            |
+                    |       4- Deletar usuário                              |
+                    |       5- Associar TAG/cartão de acesso ao usuário     |
                     |       6- Sair                                         |
                     _________________________________________________________
                     """;
@@ -174,22 +186,28 @@ public class Main {
 
             switch (opcao) {
                 case 1:
-                    exibirCadastro();
+                    exibirCadastro(1);
                     break;
                 case 2:
                     cadastrarUsuario(1);
                     break;
                 case 3:
-                    atualizarUsuario();
+                    atualizarUsuario(1);
                     break;
                 case 4:
-                    deletarUsuario();
+                    deletarUsuario(1);
                     break;
                 case 5:
                     aguardarCadastroDeIdAcesso();
                     break;
                 case 6:
-                    System.out.println("Fim do programa!");
+                    System.out.println("Fazendo logout...");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    paginaDeLogin();
                     break;
                 default:
                     System.out.println("Opção inválida!");
@@ -203,12 +221,11 @@ public class Main {
             String menu = """
                     _________________________________________________________
                     |   Escolha uma opção:                                  |
-                    |       1- Exibir cadastro completo                     |
-                    |       2- Inserir novo cadastro                        |
-                    |       3- Atualizar cadastro por id                    |
-                    |       4- Deletar um cadastro por id                   |
-                    |       5- Associar TAG ou cartão de acesso ao usuário  |
-                    |       6- Sair                                         |
+                    |       1- Exibir alunos cadastrados                    |
+                    |       2- Registrar novo aluno                         |
+                    |       3- Atualizar aluno                              |
+                    |       4- Deletar aluno                                |
+                    |       5- Sair                                         |
                     _________________________________________________________
                     """;
             System.out.println(menu);
@@ -217,31 +234,34 @@ public class Main {
 
             switch (opcao) {
                 case 1:
-                    exibirCadastro();
+                    exibirCadastro(2);
                     break;
                 case 2:
                     cadastrarUsuario(2);
                     break;
                 case 3:
-                    atualizarUsuario();
+                    atualizarUsuario(2);
                     break;
                 case 4:
-                    deletarUsuario();
+                    deletarUsuario(2);
                     break;
                 case 5:
-                    aguardarCadastroDeIdAcesso();
-                    break;
-                case 6:
-                    System.out.println("Fim do programa!");
+                    System.out.println("Fazendo logout...");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    paginaDeLogin();
                     break;
                 default:
                     System.out.println("Opção inválida!");
             }
 
-        } while (opcao != 6);
+        } while (opcao != 5);
     }
         private static void menuStudent(Student student) {
-        System.out.println("\nBem vindo " + student.user.name + "!\n1. Consultar meus dados\n2. Consultar meus atrasos\n3. Atualizar meus dados");
+        System.out.println("\nBem vindo " + student.user.name + "!\n1. Consultar meus dados\n2. Consultar meus atrasos\n3. Atualizar meus dados\n4. Sair");
         int menu3 = scanner.nextInt();
         switch (menu3) {
             case 1:
@@ -251,7 +271,16 @@ public class Main {
                 student.showAccessRegisters();
                 break;
             case 3:
-                //data update function
+                atualizarUsuario(3);
+                break;
+            case 4:
+                System.out.println("Fazendo logout...");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                paginaDeLogin();
                 break;
             default:
                 System.out.println("Opção inválida!");
@@ -355,17 +384,23 @@ public class Main {
         }
 
         // Funções de CRUD
-        private static void exibirCadastro () {
-            for (int i = 0; i < arrayStudents.size(); i++) {
-                System.out.println(arrayStudents.get(i).toString());
-            }
-            if (arrayStudents == null){
-                System.out.println("Não há usuários no sistema");
-            }
+        private static void exibirCadastro (int tipoUsuario) {
+        switch (tipoUsuario) {
+            case 1:
+                break;
+            case 2:
+                if (arrayStudents.isEmpty()) {
+                    System.out.println("Não há alunos registrados no sistema!");
+                    break;
+                }
+                for (int i = 0; i < arrayStudents.size(); i++) {
+                    System.out.println(arrayStudents.get(i).toString());
+                }
+        }
         }
 
-        private static void cadastrarUsuario (int tipoDeUsuario) {
 
+        private static void cadastrarUsuario (int tipoDeUsuario) {
             switch (tipoDeUsuario){
                 case 1:
                     System.out.println("Qual será o tipo de usuário?\n1. ADM(coordenador)\n2. AQV\n3. Aluno");
@@ -423,106 +458,137 @@ public class Main {
             }
             salvarDados();
         }
-        private static void atualizarUsuario () {
-            exibirCadastro();
-            System.out.println("Escolha um id para atualizar o cadastro:");
-            int idUsuario = scanner.nextInt();
-            scanner.nextLine();
-            scanner.nextLine();
-            System.out.println("\nAtualize os dados a seguir:");
-            for (int i = 0; i < arrayStudents.size(); i++) {
-                if (arrayStudents.get(i).user.ID == idUsuario){
-                    System.out.println("Qual dado será atualizado?\n1. Todos\n2. Nome\n3. Número de Matrícula\n4. Senha\n5. ID\n6; Turma\n7. Quantidade de atrasos");
-                    int menu = scanner.nextInt();
-                    switch (menu){
-                        case 1:
-                            System.out.print("\n--------------------ATUALIZAÇÃO DE DADOS--------------------\nNome: ");
-                            String newName = scanner.nextLine();
-                            System.out.print("Número de Matrícula: ");
-                            String newIdentifier  = scanner.nextLine();
-                            System.out.print("Senha: ");
-                            String newPassword = scanner.nextLine();
-                            System.out.print("ID: ");
-                            int newID = scanner.nextInt();
-                            scanner.nextLine();
-                            System.out.print("Turma: ");
-                            String newClassroom = scanner.nextLine();
-                            System.out.print("Quantidade de atrasos: ");
-                            int delays = scanner.nextInt();
-                            scanner.nextLine();
-                            arrayStudents.get(i).user.name = (newName);
-                            arrayStudents.get(i).user.identifier = (newIdentifier);
-                            arrayStudents.get(i).user.password = (newPassword);
-                            arrayStudents.get(i).user.ID = (newID);
-                            arrayStudents.get(i).classroom = newClassroom;
-                            arrayStudents.get(i).delays = delays;
-                            System.out.println("Dados atualizados com sucesso!");
-                            System.out.println(arrayStudents.get(i).toString());
+        private static void atualizarUsuario (int tipoUsuario) {
+        switch (tipoUsuario){
+            case 1:
+                System.out.println("Qual tipo de usuário será atualizado?\n1. ADM\n2. AQV\n3.Aluno");
+                int menu = scanner.nextInt();
+                switch (menu){
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        if (arrayADM.isEmpty()){
+                            System.out.println("Não à ADM's cadastrados no sistema");
                             break;
-                        case 2:
-                            System.out.print("\n--------------------ATUALIZAÇÃO DE NOME--------------------\nNovo nome: ");
-                            newName = scanner.nextLine();
-                            arrayStudents.get(i).user.name = (newName);
-                            System.out.println("Nome atualizado com sucesso!");
-                            System.out.println(arrayStudents.get(i).toString());
-                            break;
-                        case 3:
-                            System.out.print("\n--------------------ATUALIZAÇÃO DE IDENTIFICADOR--------------------\nNovo número de matrícula: ");
-                            newIdentifier = scanner.nextLine();
-                            arrayStudents.get(i).user.identifier = (newIdentifier);
-                            System.out.println("Número de matrícula atualizado com sucesso!");
-                            System.out.println(arrayStudents.get(i).toString());
-                            break;
-                        case 4:
-                            System.out.print("\n--------------------ATUALIZAÇÃO DE SENHA--------------------\nNova senha: ");
-                            newPassword = scanner.nextLine();
-                            arrayStudents.get(i).user.password = (newPassword);
-                            System.out.println("Senha atualizada com sucesso!");
-                            System.out.println(arrayStudents.get(i).toString());
-                            break;
-                        case 5:
-                            System.out.print("\n--------------------ATUALIZAÇÃO DE ID--------------------\nNovo ID: ");
-                            newID = scanner.nextInt();
-                            arrayStudents.get(i).user.ID = (newID);
-                            System.out.println("ID atualizado com sucesso!");
-                            System.out.println(arrayStudents.get(i).toString());
-                            break;
-                        case 6:
-                            System.out.print("\n--------------------ATUALIZAÇÃO DE TURMA--------------------\nNova Turma: ");
-                            newClassroom = scanner.nextLine();
-                            arrayStudents.get(i).classroom = (newClassroom);
-                            System.out.println("Turma atualizada com sucesso!");
-                            System.out.println(arrayStudents.get(i).toString());
-                            break;
-                        case 7:
-                            System.out.print("\n--------------------ATUALIZAÇÃO DE ATRASOS--------------------\nQuantidade de atrasos: ");
-                            delays = scanner.nextInt();
-                            arrayStudents.get(i).delays = delays;
-                            System.out.println("Atrasos atualizados com sucesso!");
-                            System.out.println(arrayStudents.get(i).toString());
-                            break;
-                        default:
-                            System.out.println("Opção inválida");
+                        }
+                        for (int i = 0; i < arrayADM.size(); i++) {
+                            System.out.println(arrayADM.get(i).toString());
+                        }
+                        break;
+                    default:
+                        System.out.println("Opção inválida!");
+                }
+                break;
+            case 2:
+                exibirCadastro(2);
+                System.out.println("Escolha um id para atualizar o cadastro:");
+                int idUsuario = scanner.nextInt();
+                scanner.nextLine();
+                scanner.nextLine();
+                System.out.println("\nAtualize os dados a seguir:");
+                for (int i = 0; i < arrayStudents.size(); i++) {
+                    if (arrayStudents.get(i).user.ID == idUsuario){
+                        System.out.println("Qual dado será atualizado?\n1. Todos\n2. Nome\n3. Número de Matrícula\n4. Senha\n5. ID\n6; Turma\n7. Quantidade de atrasos");
+                        int menu2 = scanner.nextInt();
+                        switch (menu2){
+                            case 1:
+                                System.out.print("\n--------------------ATUALIZAÇÃO DE DADOS--------------------\nNome: ");
+                                String newName = scanner.nextLine();
+                                System.out.print("Número de Matrícula: ");
+                                String newIdentifier  = scanner.nextLine();
+                                System.out.print("Senha: ");
+                                String newPassword = scanner.nextLine();
+                                System.out.print("ID: ");
+                                int newID = scanner.nextInt();
+                                scanner.nextLine();
+                                System.out.print("Turma: ");
+                                String newClassroom = scanner.nextLine();
+                                System.out.print("Quantidade de atrasos: ");
+                                int delays = scanner.nextInt();
+                                scanner.nextLine();
+                                arrayStudents.get(i).user.name = (newName);
+                                arrayStudents.get(i).user.identifier = (newIdentifier);
+                                arrayStudents.get(i).user.password = (newPassword);
+                                arrayStudents.get(i).user.ID = (newID);
+                                arrayStudents.get(i).classroom = newClassroom;
+                                arrayStudents.get(i).delays = delays;
+                                System.out.println("Dados atualizados com sucesso!");
+                                System.out.println(arrayStudents.get(i).toString());
+                                break;
+                            case 2:
+                                System.out.print("\n--------------------ATUALIZAÇÃO DE NOME--------------------\nNovo nome: ");
+                                newName = scanner.nextLine();
+                                arrayStudents.get(i).user.name = (newName);
+                                System.out.println("Nome atualizado com sucesso!");
+                                System.out.println(arrayStudents.get(i).toString());
+                                break;
+                            case 3:
+                                System.out.print("\n--------------------ATUALIZAÇÃO DE IDENTIFICADOR--------------------\nNovo número de matrícula: ");
+                                newIdentifier = scanner.nextLine();
+                                arrayStudents.get(i).user.identifier = (newIdentifier);
+                                System.out.println("Número de matrícula atualizado com sucesso!");
+                                System.out.println(arrayStudents.get(i).toString());
+                                break;
+                            case 4:
+                                System.out.print("\n--------------------ATUALIZAÇÃO DE SENHA--------------------\nNova senha: ");
+                                newPassword = scanner.nextLine();
+                                arrayStudents.get(i).user.password = (newPassword);
+                                System.out.println("Senha atualizada com sucesso!");
+                                System.out.println(arrayStudents.get(i).toString());
+                                break;
+                            case 5:
+                                System.out.print("\n--------------------ATUALIZAÇÃO DE ID--------------------\nNovo ID: ");
+                                newID = scanner.nextInt();
+                                arrayStudents.get(i).user.ID = (newID);
+                                System.out.println("ID atualizado com sucesso!");
+                                System.out.println(arrayStudents.get(i).toString());
+                                break;
+                            case 6:
+                                System.out.print("\n--------------------ATUALIZAÇÃO DE TURMA--------------------\nNova Turma: ");
+                                newClassroom = scanner.nextLine();
+                                arrayStudents.get(i).classroom = (newClassroom);
+                                System.out.println("Turma atualizada com sucesso!");
+                                System.out.println(arrayStudents.get(i).toString());
+                                break;
+                            case 7:
+                                System.out.print("\n--------------------ATUALIZAÇÃO DE ATRASOS--------------------\nQuantidade de atrasos: ");
+                                delays = scanner.nextInt();
+                                arrayStudents.get(i).delays = delays;
+                                System.out.println("Atrasos atualizados com sucesso!");
+                                System.out.println(arrayStudents.get(i).toString());
+                                break;
+                            default:
+                                System.out.println("Opção inválida");
+                        }
                     }
                 }
-            }
+                break;
+        }
             salvarDados();
         }
-        public static void deletarUsuario () {
-            exibirCadastro();
-            System.out.println("Escolha um id para deletar o cadastro:");
-            int idUsuario = scanner.nextInt();
-            scanner.nextLine();
-            for (int i = 0; i < arrayStudents.size(); i++) {
-                if(arrayStudents.get(i).user.ID == idUsuario){
-                    arrayStudents.remove(i);
-                    break;
+        public static void deletarUsuario (int tipoUsuario) {
+        switch (tipoUsuario){
+            case 1:
+                break;
+            case 2:
+                exibirCadastro(2);
+                System.out.println("Escolha um id para deletar o cadastro:");
+                int idUsuario = scanner.nextInt();
+                scanner.nextLine();
+                for (int i = 0; i < arrayStudents.size(); i++) {
+                    if(arrayStudents.get(i).user.ID == idUsuario){
+                        arrayStudents.remove(i);
+                        break;
+                    }
+                    else System.out.println("ID não encontrado!");
                 }
-                else System.out.println("ID não encontrado!");
-            }
-            salvarDados();
-            System.out.println("-----------------------Usuário deletado com sucesso------------------------\n");
-            idUsuarioRecebidoPorHTTP = 0;
+                salvarDados();
+                System.out.println("-----------------------Usuário deletado com sucesso------------------------\n");
+                idUsuarioRecebidoPorHTTP = 0;
+                break;
+        }
         }
 
         // Funções para persistência de dados

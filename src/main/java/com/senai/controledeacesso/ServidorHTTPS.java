@@ -425,7 +425,7 @@ public class ServidorHTTPS {
                     if (id >= 0 && id < Main.arrayStudents.size() && Main.arrayStudents.get(id) != null) {
                         // Deleta o usuário da lista
                         Main.idUsuarioRecebidoPorHTTP = id;
-                        Main.deletarUsuario();
+                        Main.deletarUsuario(2);
 
                         response = "{\"status\":\"Cadastro deletado com sucesso.\"}";
                         statusCode = 200;
