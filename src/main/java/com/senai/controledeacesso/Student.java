@@ -1,5 +1,7 @@
 package com.senai.controledeacesso;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 public class Student {
@@ -26,5 +28,13 @@ public class Student {
 
     public String toString() {
         return user.toString() + "\nTURMA: " + classroom + "\nATRASOS: " + delays;
+    }
+
+    public void addDelay(String delayDetails) {
+        arrayDelays.add(delayDetails);
+    }
+
+    public JSONArray arrayDelays() {
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.senai.controledeacesso;
 
 public class User {
+    public String imagePath;
     String name;
     String identifier;
     String password;

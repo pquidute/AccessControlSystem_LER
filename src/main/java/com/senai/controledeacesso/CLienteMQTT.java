@@ -4,10 +4,11 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class CLienteMQTT {
-
+    static Scanner scanner = new Scanner(System.in);
     private MqttClient cliente;
     private final String brokerUrl;
     private String topicoAtual;
@@ -57,7 +58,19 @@ public class CLienteMQTT {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 String mensagemRecebida = new String(message.getPayload(), StandardCharsets.UTF_8);
-                System.out.println("Mensagem recebida no tópico " + topic + ": " + mensagemRecebida);
+                System.out.println("TENTATIVA DE ACESSO\nID de acesso recebido: " + mensagemRecebida + "\nPermitir acesso?\n1.Sim\n2. Não");
+                int menu = scanner.nextInt();
+                switch (menu){
+                    case 1:
+                        System.out.println("Acesso permitido: aluno portador da matrícula " + mensagemRecebida + " acessando unidade.");
+                    break;
+                    case 2:
+                        System.out.println("Acesso negado: o aluno portador da matrícula " + mensagemRecebida + " não pode acessar a unidade.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida!");
+                }
+
                 if (listenerAtual != null) {
                     listenerAtual.onMensagemRecebida(mensagemRecebida);
                 }

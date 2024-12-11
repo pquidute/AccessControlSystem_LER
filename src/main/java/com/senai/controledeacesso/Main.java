@@ -3,6 +3,7 @@ package com.senai.controledeacesso;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -16,6 +17,7 @@ public class Main {
     private static final File databaseAQV = new File(pastaControleDeAcesso, "databaseAQV.txt");
     private static final File arquivoRegistrosDeAcesso = new File(pastaControleDeAcesso, "registrosDeAcesso.txt");
     public static final File pastaImagens = new File(pastaControleDeAcesso, "imagens");
+    public static ArrayDeque<Object> arrayListImagens;
 
     //Arrays
     static ArrayList<Student> arrayStudents = new ArrayList<>();
@@ -357,6 +359,9 @@ public class Main {
             for (int i = 0; i < arrayStudents.size(); i++) {
                 System.out.println(arrayStudents.get(i).toString());
             }
+            if (arrayStudents == null){
+                System.out.println("Não há usuários no sistema");
+            }
         }
 
         private static void cadastrarUsuario (int tipoDeUsuario) {
@@ -388,6 +393,11 @@ public class Main {
                                 System.out.print("TURMA: ");
                                 String classroom = scanner.nextLine();
                                 arrayStudents.add(new Student(new User(name, identifier, password), classroom));
+                                for (int j = 0; j < arrayStudents.size(); j++) {
+                                    if (arrayStudents.get(i).user.identifier.equals(identifier)){
+                                        arrayStudents.get(i).user.ID = Integer.parseInt(ID);
+                                    }
+                                }
                             }
                             break;
                     }
@@ -413,7 +423,6 @@ public class Main {
             }
             salvarDados();
         }
-
         private static void atualizarUsuario () {
             exibirCadastro();
             System.out.println("Escolha um id para atualizar o cadastro:");
@@ -499,7 +508,6 @@ public class Main {
             }
             salvarDados();
         }
-
         public static void deletarUsuario () {
             exibirCadastro();
             System.out.println("Escolha um id para deletar o cadastro:");
@@ -518,11 +526,108 @@ public class Main {
         }
 
         // Funções para persistência de dados
-        private static void carregarDadosDoArquivo () {
+        public static void carregarDadosDoArquivo() {
+            try {
+                // Read data for students
+                try (BufferedReader reader = new BufferedReader(new FileReader(databaseStudent))) {
+                    String line;
+                    // Skip the header row
+                    reader.readLine();
 
+                    while ((line = reader.readLine()) != null) {
+                        String[] data = line.split(",");
 
+                        // Ensure that there are enough fields
+                        if (data.length >= 8) {
+                            String name = data[1];
+                            String identifier = data[2];
+                            String password = data[3];
+                            String classroom = data[4];
+                            String delays = data[5];
+                            String accessId = data[6];
+
+                            // Parse arrayDelays from the semicolon-separated string
+                            ArrayList<String> arrayDelays = new ArrayList<>();
+                            String[] delaysArray = data[7].split(";");
+                            for (String delay : delaysArray) {
+                                arrayDelays.add(delay);
+                            }
+
+                            // Create a User object
+                            User user = new User(name, identifier, password); // No ID field here
+
+                            // Create a Student object and set the arrayDelays
+                            Student student = new Student(user, classroom);
+                            student.delays = Integer.parseInt(delays);  // Set the delays count (optional)
+                            student.accessId = Integer.parseInt(accessId);  // Set the accessId (optional)
+                            student.arrayDelays = arrayDelays;  // Set the arrayDelays
+
+                            arrayStudents.add(student);
+                        } else {
+                            System.err.println("Erro: Linha com número insuficiente de campos: " + line);
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("Erro ao ler os dados dos estudantes: " + e.getMessage(), e);
+                }
+
+                // Read data for ADM
+                try (BufferedReader reader = new BufferedReader(new FileReader(databaseADM))) {
+                    String line;
+                    // Skip the header row
+                    reader.readLine();
+
+                    while ((line = reader.readLine()) != null) {
+                        String[] data = line.split(",");
+
+                        // Ensure the line has enough fields
+                        if (data.length >= 4) {
+                            String name = data[1];
+                            String identifier = data[2];
+                            String password = data[3];
+
+                            // Create and add the ADM object
+                            User user = new User(name, identifier, password); // No ID field here
+                            ADM adm = new ADM(user);
+                            arrayADM.add(adm);
+                        } else {
+                            System.err.println("Erro: Linha com número insuficiente de campos para ADM: " + line);
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("Erro ao ler os dados dos administradores: " + e.getMessage(), e);
+                }
+
+                // Read data for AQV
+                try (BufferedReader reader = new BufferedReader(new FileReader(databaseAQV))) {
+                    String line;
+                    // Skip the header row
+                    reader.readLine();
+
+                    while ((line = reader.readLine()) != null) {
+                        String[] data = line.split(",");
+
+                        // Ensure the line has enough fields
+                        if (data.length >= 4) {
+                            String name = data[1];
+                            String identifier = data[2];
+                            String password = data[3];
+
+                            // Create and add the AQV object
+                            User user = new User(name, identifier, password); // No ID field here
+                            AQV aqv = new AQV(user);
+                            arrayAQV.add(aqv);
+                        } else {
+                            System.err.println("Erro: Linha com número insuficiente de campos para AQV: " + line);
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("Erro ao ler os dados de AQV: " + e.getMessage(), e);
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao carregar os dados: " + e.getMessage());
+            }
         }
-
         public static void salvarDados() {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(databaseStudent))) {
                 // Write the header row
@@ -593,7 +698,6 @@ public class Main {
                 throw new RuntimeException(e);
             }
         }
-
         private static void verificarEstruturaDeDiretorios () {
             // Verifica se a pasta ControleDeAcesso existe, caso contrário, cria
             if (!pastaControleDeAcesso.exists()) {
