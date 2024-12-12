@@ -7,10 +7,6 @@ public class AQV {
         this.user = user;
     }
 
-    public void allowAccess(){
-
-    }
-
     public String toString() {
         return user.toString();
     }

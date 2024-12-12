@@ -22,6 +22,7 @@ public class User {
 
     public String toString() {
         return String.format(
+                "| ID | | NOME | EMAIl | SENHA"+
                 "| %-5d | %-15s | %-15s | %-10s |",
                 ID, name, identifier, password
         );

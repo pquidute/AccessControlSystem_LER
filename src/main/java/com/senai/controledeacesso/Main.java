@@ -1,8 +1,6 @@
 package com.senai.controledeacesso;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -559,16 +557,148 @@ public class Main {
             int menu = scanner.nextInt();
             switch (menu){
                 case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
                     if (arrayADM.isEmpty()){
                         System.out.println("Não à ADM's cadastrados no sistema");
                         break;
                     }
-                    for (int i = 0; i < arrayADM.size(); i++) {
+                    for (int i = 0; i < arrayADM.size();i++) {
                         System.out.println(arrayADM.get(i).toString());
+                    }
+                    System.out.print("Digite o ID do ADM que terá os dados atualizados: ");
+                    int admID = scanner.nextInt();
+                    scanner.nextLine();
+                    for (int i = 0; i < arrayADM.size(); i++) {
+                        if (arrayADM.get(i).user.ID == admID){
+                            System.out.println("ATUALIZAÇÃO DE USUÁRIO: '" + arrayADM.get(i).user.name + "'");
+                            System.out.print("NOME: ");
+                            String name = scanner.nextLine();
+                            System.out.print("EMAIL: ");
+                            String identifier = scanner.nextLine();
+                            System.out.print("SENHA: ");
+                            String password = scanner.nextLine();
+                            System.out.print("ID: ");
+                            int id = scanner.nextInt();
+                            arrayADM.get(i).user.name.equals(name);
+                            arrayADM.get(i).user.identifier.equals(identifier);
+                            arrayADM.get(i).user.password.equals(password);
+                            arrayADM.get(i).user.ID = id;
+                            break;
+                        }
+                    }
+                    break;
+                case 2:
+                    if (arrayAQV.isEmpty()){
+                        System.out.println("Não à AQV's cadastrados no sistema");
+                        break;
+                    }
+                    for (int i = 0; i < arrayAQV.size();i++) {
+                        System.out.println(arrayAQV.get(i).toString());
+                    }
+                    System.out.print("Digite o ID do AQV que terá os dados atualizados: ");
+                    int aqvID = scanner.nextInt();
+                    scanner.nextLine();
+                    for (int i = 0; i < arrayAQV.size(); i++) {
+                        if (arrayAQV.get(i).user.ID == aqvID){
+                            System.out.println("ATUALIZAÇÃO DE USUÁRIO: '" + arrayAQV.get(i).user.name + "'");
+                            System.out.print("NOME: ");
+                            String name = scanner.nextLine();
+                            System.out.print("EMAIL: ");
+                            String identifier = scanner.nextLine();
+                            System.out.print("SENHA: ");
+                            String password = scanner.nextLine();
+                            System.out.print("ID: ");
+                            int id = scanner.nextInt();
+                            arrayAQV.get(i).user.name.equals(name);
+                            arrayAQV.get(i).user.identifier.equals(identifier);
+                            arrayAQV.get(i).user.password.equals(password);
+                            arrayAQV.get(i).user.ID = id;
+                            break;
+                        }
+                    }
+                    break;
+                case 3:
+                    exibirCadastro(2);
+                    System.out.println("Escolha um id para atualizar o cadastro:");
+                    int idUsuario = scanner.nextInt();
+                    scanner.nextLine();
+                    scanner.nextLine();
+                    System.out.println("\nAtualize os dados a seguir:");
+                    for (int i = 0; i < arrayStudents.size(); i++) {
+                        if (arrayStudents.get(i).user.ID == idUsuario){
+                            System.out.println("Qual dado será atualizado?\n1. Todos\n2. Nome\n3. Número de Matrícula\n4. Senha\n5. ID\n6; Turma\n7. Quantidade de atrasos");
+                            int menu2 = scanner.nextInt();
+                            switch (menu2){
+                                case 1:
+                                    System.out.print("\n--------------------ATUALIZAÇÃO DE DADOS--------------------\nNome: ");
+                                    String newName = scanner.nextLine();
+                                    System.out.print("Número de Matrícula: ");
+                                    String newIdentifier  = scanner.nextLine();
+                                    System.out.print("Senha: ");
+                                    String newPassword = scanner.nextLine();
+                                    System.out.print("ID: ");
+                                    int newID = scanner.nextInt();
+                                    scanner.nextLine();
+                                    System.out.print("Turma: ");
+                                    String newClassroom = scanner.nextLine();
+                                    System.out.print("Quantidade de atrasos: ");
+                                    int delays = scanner.nextInt();
+                                    scanner.nextLine();
+                                    arrayStudents.get(i).user.name = (newName);
+                                    arrayStudents.get(i).user.identifier = (newIdentifier);
+                                    arrayStudents.get(i).user.password = (newPassword);
+                                    arrayStudents.get(i).user.ID = (newID);
+                                    arrayStudents.get(i).classroom = newClassroom;
+                                    arrayStudents.get(i).delays = delays;
+                                    System.out.println("Dados atualizados com sucesso!");
+                                    System.out.println(arrayStudents.get(i).toString());
+                                    break;
+                                case 2:
+                                    System.out.print("\n--------------------ATUALIZAÇÃO DE NOME--------------------\nNovo nome: ");
+                                    newName = scanner.nextLine();
+                                    arrayStudents.get(i).user.name = (newName);
+                                    System.out.println("Nome atualizado com sucesso!");
+                                    System.out.println(arrayStudents.get(i).toString());
+                                    break;
+                                case 3:
+                                    System.out.print("\n--------------------ATUALIZAÇÃO DE IDENTIFICADOR--------------------\nNovo número de matrícula: ");
+                                    newIdentifier = scanner.nextLine();
+                                    arrayStudents.get(i).user.identifier = (newIdentifier);
+                                    System.out.println("Número de matrícula atualizado com sucesso!");
+                                    System.out.println(arrayStudents.get(i).toString());
+                                    break;
+                                case 4:
+                                    System.out.print("\n--------------------ATUALIZAÇÃO DE SENHA--------------------\nNova senha: ");
+                                    newPassword = scanner.nextLine();
+                                    arrayStudents.get(i).user.password = (newPassword);
+                                    System.out.println("Senha atualizada com sucesso!");
+                                    System.out.println(arrayStudents.get(i).toString());
+                                    break;
+                                case 5:
+                                    System.out.print("\n--------------------ATUALIZAÇÃO DE ID--------------------\nNovo ID: ");
+                                    newID = scanner.nextInt();
+                                    arrayStudents.get(i).user.ID = (newID);
+                                    System.out.println("ID atualizado com sucesso!");
+                                    System.out.println(arrayStudents.get(i).toString());
+                                    break;
+                                case 6:
+                                    System.out.print("\n--------------------ATUALIZAÇÃO DE TURMA--------------------\nNova Turma: ");
+                                    newClassroom = scanner.nextLine();
+                                    arrayStudents.get(i).classroom = (newClassroom);
+                                    System.out.println("Turma atualizada com sucesso!");
+                                    System.out.println(arrayStudents.get(i).toString());
+                                    break;
+                                case 7:
+                                    System.out.print("\n--------------------ATUALIZAÇÃO DE ATRASOS--------------------\nQuantidade de atrasos: ");
+                                    delays = scanner.nextInt();
+                                    arrayStudents.get(i).delays = delays;
+                                    System.out.println("Atrasos atualizados com sucesso!");
+                                    System.out.println(arrayStudents.get(i).toString());
+                                    break;
+                                default:
+                                    System.out.println("Opção inválida");
+                            }
+                            break;
+                        }
                     }
                     break;
                 default:
@@ -656,9 +786,35 @@ public class Main {
                         default:
                             System.out.println("Opção inválida");
                     }
+                    break;
                 }
             }
             break;
+        case 3:
+            System.out.println("Qual tipo de dado será atualizado?\n1. Senha");
+            int menu3 = scanner.nextInt();
+            scanner.nextLine();
+            switch (menu3) {
+                case 1:
+                System.out.print("Número de matrícula: ");
+                String identifier = scanner.nextLine();
+                for (int i = 0; i < arrayStudents.size(); i++) {
+                    if (arrayStudents.get(i).user.identifier.equals(identifier)) {
+                        System.out.print("\n--------------------ATUALIZAÇÃO DE SENHA--------------------\nNova senha: ");
+                        String newPassword = scanner.nextLine();
+                        arrayStudents.get(i).user.password = (newPassword);
+                        System.out.println("Senha atualizada com sucesso!");
+                        System.out.println(arrayStudents.get(i).toString());
+                        break;
+                    }
+                    System.out.println("Número de matrícula inexistente!");
+                }
+                System.out.println();
+                break;
+                default:
+                    System.out.println("Opção inválida!");
+                break;
+            }
     }
         salvarDados();
     }
