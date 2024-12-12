@@ -223,7 +223,8 @@ public class Main {
                 |       2- Registrar novo aluno                         |
                 |       3- Atualizar aluno                              |
                 |       4- Deletar aluno                                |
-                |       5- Sair                                         |
+                |       5- INBOX                                        |
+                |       6- Sair                                         |
                 _________________________________________________________
                 """;
         System.out.println(menu);
@@ -244,6 +245,9 @@ public class Main {
                 deletarUsuario(2);
                 break;
             case 5:
+                inbox();
+                break;
+            case 6:
                 System.out.println("Fazendo logout...");
                 try {
                     Thread.sleep(1000);
