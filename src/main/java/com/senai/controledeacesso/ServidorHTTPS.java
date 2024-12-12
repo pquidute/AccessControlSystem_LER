@@ -296,7 +296,7 @@ public class ServidorHTTPS {
                 User newUser = new User(nome, identifier, password);
                 newUser.identifier = identifier;
 
-                Student newStudent = new Student(newUser, "DefaultClass"); // Use appropriate class assignment
+                Student newStudent = new Student(newUser, "DefaultClass", 0000); // Use appropriate class assignment
                 newStudent.accessId = Main.arrayStudents.size(); // Set unique access ID
                 newStudent.arrayDelays = new ArrayList<>(); // Initialize the delays list
 

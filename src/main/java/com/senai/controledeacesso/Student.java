@@ -12,9 +12,10 @@ public class Student {
     ArrayList<String> arrayDelays;
 
 
-    Student(User user, String classroom) {
+    Student(User user, String classroom, int accessId) {
         this.user = user;
         this.classroom = classroom;
+        this.accessId = accessId;
     }
 
     public void showAccessRegisters(){
@@ -26,8 +27,9 @@ public class Student {
 
     public String toString() {
         return String.format(
-                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6d |",
-                user.ID, user.name, user.identifier, user.password, classroom, delays
+                "|  ID  | NOME  | NÚMERO DE MATRÍCULA | SENHA | TURMA | ATRASOS | ID ACESSO |\n " +
+                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6d | %-6d |",
+                user.ID, user.name, user.identifier, user.password, classroom, delays, accessId
         );
     }
 

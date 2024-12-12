@@ -293,6 +293,7 @@ public class Main {
 
     //Access Register
     private static void inbox(){
+        System.out.println("------------INBOX------------\n[Aguardando acessos...]");
         try {
             Thread.sleep(100000);
         } catch (InterruptedException e) {
@@ -300,19 +301,39 @@ public class Main {
         }
     }
     private static void criarNovoRegistroDeAcesso (String accessID){
-        System.out.println("O portador do ID " + accessID + " está tentando acessar a unidade!\n[NOTIFICAÇÃO INBOX]");
-        System.out.println("Deixar o portador do ID " + accessID + " acessar a unidade?\n1. Sim\n2. Não");
-        int menu = scanner.nextInt();
-        switch (menu){
-            case 1:
-                System.out.println("[CATRACA LIBERADA] - Portador do ID: " + accessID + " acessando unidade");
+        for (int i = 0; i < arrayStudents.size(); i++) {
+            if (arrayStudents.get(i).accessId == Integer.parseInt(accessID)){
+                arrayStudents.get(i).delays += 1; //registers the delay when the student is found
+                System.out.println("O aluno '" + arrayStudents.get(i).user.name + "', portador do ID de acesso '" + accessID + "' está tentando acessar a unidade!");
+                System.out.println("Deixar " + arrayStudents.get(i).user.name + " acessar a unidade?\n1. Sim\n2. Não");
+                int menu = scanner.nextInt();
+                switch (menu){
+                    case 1:
+                        System.out.println("[CATRACA LIBERADA] - '" + arrayStudents.get(i).user.name  + "' acessando unidade");
+                        break;
+                    case 2:
+                        System.out.println("[CATRACA BLOQUEADA] - '" + arrayStudents.get(i).user.name + "' não pode acessar a unidade");
+                        break;
+                    default:
+                        System.out.println("Opção inválida");
+                }
+                salvarDados();
                 break;
-            case 2:
-                System.out.println("[CATRACA BLOQUEADA] - O portador do ID: " + accessID + " não pode acessar a unidade");
-                break;
-            default:
-                System.out.println("Opção inválida");
+            }
+            System.out.println("O portador do ID de acesso: " + accessID + " [não encontrado no banco de dados] está tentando acessar a unidade\n1. Permitir acesso\n2. Não permitir acesso");
+            int menu = scanner.nextInt();
+            switch (menu){
+                case 1:
+                    System.out.println("[CATRACA LIBERADA] - Portador do ID '" + accessID + "' acessando unidade");
+                    break;
+                case 2:
+                    System.out.println("[CATRACA BLOQUEADA] - O portador do ID '" + accessID + "' não pode acessar a unidade");
+                    break;
+                default:
+                    System.out.println("Opção inválida");
+            }
         }
+
     }
     private static void cadastrarNovoIdAcesso (String novoIdAcesso) {
         boolean encontrado = false; // Variável para verificar se o usuário foi encontrado
@@ -488,13 +509,15 @@ public class Main {
                             String ID = scanner.nextLine();
                             System.out.print("NOME: ");
                             String name = scanner.nextLine();
-                            System.out.print("Número de Matrícula: ");
+                            System.out.print("NÚMERO DE MATRÍCULA: ");
                             String identifier = scanner.nextLine();
-                            System.out.print("Senha: ");
+                            System.out.print("SENHA: ");
                             String password = scanner.nextLine();
                             System.out.print("TURMA: ");
                             String classroom = scanner.nextLine();
-                            arrayStudents.add(new Student(new User(name, identifier, password), classroom));
+                            System.out.print("ID DE ACESSO: ");
+                            int accessID = scanner.nextInt();
+                            arrayStudents.add(new Student(new User(name, identifier, password), classroom, accessID));
                             for (int j = 0; j < arrayStudents.size(); j++) {
                                 if (arrayStudents.get(i).user.identifier.equals(identifier)){
                                     arrayStudents.get(i).user.ID = Integer.parseInt(ID);
@@ -521,7 +544,9 @@ public class Main {
                     String password = scanner.nextLine();
                     System.out.print("TURMA: ");
                     String classroom = scanner.nextLine();
-                    arrayStudents.add(new Student(new User(name, identifier, password), classroom));
+                    System.out.print("ID DE ACESSO: ");
+                    int accessID = scanner.nextInt();
+                    arrayStudents.add(new Student(new User(name, identifier, password), classroom, accessID));
                 }
                 break;
         }
@@ -822,7 +847,7 @@ public class Main {
                         user.ID = id;
 
                         // Create a Student object
-                        Student student = new Student(user, classroom);
+                        Student student = new Student(user, classroom, accessId);
                         student.delays = delays;
                         student.accessId = accessId;
 
