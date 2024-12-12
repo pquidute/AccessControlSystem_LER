@@ -27,8 +27,9 @@ public class Student {
 
     public String toString() {
         return String.format(
-                "|  ID  | NOME  | NÚMERO DE MATRÍCULA | SENHA | TURMA | ATRASOS | ID ACESSO |\n " +
-                "| %-5d | %-15s | %-15s | %-10s | %-10s | %-6d | %-6d |",
+                "| %-5s | %-15s | %-20s | %-10s | %-10s | %-6s | %-10s |\n" +
+                "| %-5d | %-15s | %-20s | %-10s | %-10s | %-6d | %-10d |",
+                "ID", "NOME", "NÚMERO DE MATRÍCULA", "SENHA", "TURMA", "ATRASOS", "ID ACESSO",
                 user.ID, user.name, user.identifier, user.password, classroom, delays, accessId
         );
     }
